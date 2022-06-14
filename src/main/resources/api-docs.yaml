@@ -1,0 +1,69 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+paths:
+  /exchange/sell:
+    post:
+      tags:
+        - exchange-controller
+      operationId: sell
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseDto'
+  /exchange/buy:
+    post:
+      tags:
+        - exchange-controller
+      operationId: buy
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestDto'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseDto'
+components:
+  schemas:
+    Currency:
+      type: string
+      enum:
+        - EUR
+        - GBP
+    RequestDto:
+      required:
+        - currency
+      type: object
+      properties:
+        amount:
+          minimum: 0
+          type: number
+        currency:
+          type: Currency
+
+    ResponseDto:
+      type: object
+      properties:
+        amount:
+          type: number
+        currency:
+          type: Currency

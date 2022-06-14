@@ -1,0 +1,1 @@
+INSERT INTO db_config (name, data) VALUES ('baseline', 1.2375);

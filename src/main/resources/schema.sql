@@ -1,0 +1,6 @@
+CREATE TABLE db_config (
+  id   INTEGER      NOT NULL AUTO_INCREMENT,
+  name VARCHAR(128) NOT NULL,
+  data DOUBLE NOT NULL,
+  PRIMARY KEY (id)
+);
