@@ -33,6 +33,7 @@ public class FrontEndInterfaceTest {
 
     @Test
     void baseLineIsEmpty() throws Exception {
+        dbConfigRepository.deleteAll();
         final var dto = new ResponseDto().amount(BigDecimal.valueOf(100.00)).currency(Currency.GBP);
         final var requestAsByte = objectMapper.writeValueAsBytes(dto);
 
@@ -44,7 +45,6 @@ public class FrontEndInterfaceTest {
 
     @Test
     void validation() throws Exception {
-        dbConfigRepository.deleteAll();
         final var dto = new ResponseDto().amount(BigDecimal.valueOf(100.00));
         final var requestAsByte = objectMapper.writeValueAsBytes(dto);
 
