@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.northarea.exchanger.model.Currency;
-import ru.northarea.exchanger.model.ResponseDto;
+import ru.northarea.exchanger.model.RequestDto;
 import ru.northarea.exchanger.repository.DbConfigRepository;
 
 import java.math.BigDecimal;
@@ -34,7 +34,7 @@ public class FrontEndInterfaceTest {
     @Test
     void baseLineIsEmpty() throws Exception {
         dbConfigRepository.deleteAll();
-        final var dto = new ResponseDto().amount(BigDecimal.valueOf(100.00)).currency(Currency.GBP);
+        final var dto = new RequestDto().amount(BigDecimal.valueOf(100.00)).from(Currency.GBP).to(Currency.EUR);
         final var requestAsByte = objectMapper.writeValueAsBytes(dto);
 
         mockMvc.perform(post(AppConstants.EXCHANGE_URL + AppConstants.BUY_URL)
@@ -45,7 +45,7 @@ public class FrontEndInterfaceTest {
 
     @Test
     void validation() throws Exception {
-        final var dto = new ResponseDto().amount(BigDecimal.valueOf(100.00));
+        final var dto = new RequestDto().amount(BigDecimal.valueOf(100.00));
         final var requestAsByte = objectMapper.writeValueAsBytes(dto);
 
         mockMvc.perform(post(AppConstants.EXCHANGE_URL + AppConstants.BUY_URL)

@@ -4,3 +4,5 @@ CREATE TABLE db_config (
   data DOUBLE NOT NULL,
   PRIMARY KEY (id)
 );
+
+CREATE UNIQUE INDEX unique_name ON db_config (name);
