@@ -3,6 +3,7 @@ package ru.northarea.exchanger.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.northarea.exchanger.config.AppProperties;
+import ru.northarea.exchanger.model.Currency;
 import ru.northarea.exchanger.model.RequestDto;
 import ru.northarea.exchanger.model.ResponseDto;
 
@@ -12,24 +13,29 @@ import java.math.RoundingMode;
 @Service
 @RequiredArgsConstructor
 public class ExchangeService {
-    private final static int SCALE = 2;
-    private final static RoundingMode roundingMode = RoundingMode.DOWN;
+    private static final int SCALE = 2;
+    private static final RoundingMode roundingMode = RoundingMode.DOWN;
+    private static final int SCALE_RATE = 5;
 
     private final AppProperties appProperties;
     private final CurrencyService currencyService;
 
-    public ResponseDto sellConvert(RequestDto requestDto) {
-        final var converted = currencyService.convert(requestDto.getAmount(), requestDto.getFrom(), requestDto.getTo());
-        final var amount = subtractMargin(converted);
-        final var scaled = amount.setScale(SCALE, roundingMode);
-        return new ResponseDto().amount(scaled).currency(requestDto.getTo());
+    public ResponseDto convertAndSell(RequestDto requestDto) {
+        final BigDecimal convertedAmount = currencyService.convert(requestDto.getAmount(), requestDto.getSell(), requestDto.getBuy());
+        final var subtractedAmount = subtractMargin(convertedAmount);
+        return fillResponseDto(subtractedAmount, requestDto.getAmount(), requestDto.getBuy());
     }
 
-    public ResponseDto buyConvert(RequestDto requestDto) {
-        final var converted = currencyService.convert(requestDto.getAmount(), requestDto.getFrom(), requestDto.getTo());
-        final var amount = addMargin(converted);
-        final var scaled = amount.setScale(SCALE, roundingMode);
-        return new ResponseDto().amount(scaled).currency(requestDto.getTo());
+    public ResponseDto convertAndBuy(RequestDto requestDto) {
+        final BigDecimal convertedAmount = currencyService.convert(requestDto.getAmount(), requestDto.getSell(), requestDto.getBuy());
+        final var subtractedAmount = addMargin(convertedAmount);
+        return fillResponseDto(subtractedAmount, requestDto.getAmount(), requestDto.getBuy());
+    }
+
+    private ResponseDto fillResponseDto(BigDecimal subtractedAmount, BigDecimal amount, Currency currency) {
+        final var scaledAmount = subtractedAmount.setScale(SCALE, roundingMode).stripTrailingZeros();
+        final var rate = amount.divide(scaledAmount, SCALE_RATE, roundingMode).stripTrailingZeros();
+        return new ResponseDto().amount(scaledAmount).currency(currency).rate(rate);
     }
 
     private BigDecimal addMargin(BigDecimal value) {
