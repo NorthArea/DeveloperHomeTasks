@@ -51,22 +51,24 @@ components:
         - GBP
     RequestDto:
       required:
-        - from
-        - to
+        - sell
+        - buy
       type: object
       properties:
         amount:
           minimum: 0
           type: number
-        from:
+        sell:
           type: Currency
-        to:
+        buy:
           type: Currency
 
     ResponseDto:
       type: object
       properties:
         amount:
+          type: number
+        rate:
           type: number
         currency:
           type: Currency

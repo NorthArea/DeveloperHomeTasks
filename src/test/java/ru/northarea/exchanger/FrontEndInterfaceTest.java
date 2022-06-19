@@ -34,7 +34,7 @@ public class FrontEndInterfaceTest {
     @Test
     void baseLineIsEmpty() throws Exception {
         dbConfigRepository.deleteAll();
-        final var dto = new RequestDto().amount(BigDecimal.valueOf(100.00)).from(Currency.GBP).to(Currency.EUR);
+        final var dto = new RequestDto().amount(BigDecimal.valueOf(100.00)).sell(Currency.GBP).buy(Currency.EUR);
         final var requestAsByte = objectMapper.writeValueAsBytes(dto);
 
         mockMvc.perform(post(AppConstants.EXCHANGE_URL + AppConstants.BUY_URL)

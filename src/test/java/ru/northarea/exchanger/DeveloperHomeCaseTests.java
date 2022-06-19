@@ -32,54 +32,58 @@ class DeveloperHomeCaseTests {
 	private DbConfigRepository dbConfigRepository;
 
 	@Test
-	void firstCaseEURToGBP() throws Exception {
-		final var dto = new RequestDto().amount(BigDecimal.valueOf(100.00)).from(Currency.EUR).to(Currency.GBP);
+	void firstCaseSellEURBuyGBP() throws Exception {
+		final var dto = new RequestDto().amount(BigDecimal.valueOf(100.00)).sell(Currency.EUR).buy(Currency.GBP);
 		final var requestAsByte = objectMapper.writeValueAsBytes(dto);
 
 		final String responseAsString = requestToWebServer(AppConstants.SELL_URL, requestAsByte);
 
 		final var response = objectMapper.readValue(responseAsString, ResponseDto.class);
 
-		assertEquals(BigDecimal.valueOf(79.18), response.getAmount());
+		assertEquals(new BigDecimal("79.18"), response.getAmount());
+		assertEquals(new BigDecimal("1.26294"), response.getRate());
 		assertEquals(Currency.GBP, response.getCurrency());
 	}
 
 	@Test
 	void firstCaseGBPToEUR() throws Exception {
-		final var dto = new RequestDto().amount(BigDecimal.valueOf(100.00)).from(Currency.GBP).to(Currency.EUR);
+		final var dto = new RequestDto().amount(BigDecimal.valueOf(100.00)).sell(Currency.GBP).buy(Currency.EUR);
 		final var requestAsByte = objectMapper.writeValueAsBytes(dto);
 
 		final String responseAsString = requestToWebServer(AppConstants.SELL_URL, requestAsByte);
 
 		final var response = objectMapper.readValue(responseAsString, ResponseDto.class);
 
-		assertEquals(BigDecimal.valueOf(121.27), response.getAmount());
+		assertEquals(new BigDecimal("121.27"), response.getAmount());
+		assertEquals(new BigDecimal("0.8246"), response.getRate());
 		assertEquals(Currency.EUR, response.getCurrency());
 	}
 
 	@Test
 	void secondCaseEURToGBP() throws Exception {
-		final var dto = new RequestDto().amount(BigDecimal.valueOf(100.00)).from(Currency.EUR).to(Currency.GBP);
+		final var dto = new RequestDto().amount(BigDecimal.valueOf(100.00)).sell(Currency.EUR).buy(Currency.GBP);
 		final var requestAsByte = objectMapper.writeValueAsBytes(dto);
 
 		final String responseAsString = requestToWebServer(AppConstants.BUY_URL, requestAsByte);
 
 		final var response = objectMapper.readValue(responseAsString, ResponseDto.class);
 
-		assertEquals(BigDecimal.valueOf(82.41), response.getAmount());
+		assertEquals(new BigDecimal("82.41"), response.getAmount());
+		assertEquals(new BigDecimal("1.21344"), response.getRate());
 		assertEquals(Currency.GBP, response.getCurrency());
 	}
 
 	@Test
 	void secondCaseGBPToEUR() throws Exception {
-		final var dto = new RequestDto().amount(BigDecimal.valueOf(100.00)).from(Currency.GBP).to(Currency.EUR);
+		final var dto = new RequestDto().amount(BigDecimal.valueOf(100.00)).sell(Currency.GBP).buy(Currency.EUR);
 		final var requestAsByte = objectMapper.writeValueAsBytes(dto);
 
 		final String responseAsString = requestToWebServer(AppConstants.BUY_URL, requestAsByte);
 
 		final var response = objectMapper.readValue(responseAsString, ResponseDto.class);
 
-		assertEquals(BigDecimal.valueOf(126.22), response.getAmount());
+		assertEquals(new BigDecimal("126.22"), response.getAmount());
+		assertEquals(new BigDecimal("0.79226"), response.getRate());
 		assertEquals(Currency.EUR, response.getCurrency());
 	}
 
